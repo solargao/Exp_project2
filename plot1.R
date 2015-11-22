@@ -1,0 +1,17 @@
+library(dplyr)
+setwd("F:/workbench/R/coursera/exploratory data analysis/project2")
+## This first line will likely take a few seconds. Be patient!
+NEI <- readRDS("summarySCC_PM25.rds")
+SCC <- readRDS("Source_Classification_Code.rds")
+year1 <- sum(with(data=NEI,subset(Emissions,year=="1999")))
+year2 <- sum(with(data=NEI,subset(Emissions,year=="2002")))
+year3 <- sum(with(data=NEI,subset(Emissions,year=="2005")))
+year4 <- sum(with(data=NEI,subset(Emissions,year=="2008")))
+NEI_Emission <- transmute(NEI,Emissions=Emissions,year=year)
+NEI_Emission <- split(NEI_Emission,NEI_Emission$year)
+NEI_Emission <- lapply(NEI_Emission,function(x) sum(x$Emissions))
+NEI_Emission <- as.list(NEI_Emission)
+#plot and save as png
+png(filename = "plot1.png", width = 480, height = 480)
+barplot(t(as.matrix(NEI_Emission)),main = "Total PM2.5 emission")
+dev.off()
